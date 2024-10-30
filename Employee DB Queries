@@ -84,7 +84,7 @@ select * from assigned_to_426;
 
 select e_no
 from assigned_to_426 a,project_426 p
-where a.p_no=p.p_no and p.p_loc in ("bangalore","mysure");
+where a.p_no=p.p_no and p.p_loc in ("bangalore","mysure","Hyderabad");
 
 update incentives_426 i
 set i.incentive_amt=null
