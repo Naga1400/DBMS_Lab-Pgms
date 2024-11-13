@@ -1,0 +1,117 @@
+show databases;
+create database employee_24becs426;
+use employee_24becs426;
+show tables;
+
+create table dept_426(
+d_no int,
+d_name varchar(20),
+d_loc varchar(20),
+primary key(d_no)
+);
+
+create table employee_426(
+e_no int,
+e_name varchar(20),
+mngr_no int,
+hire_date varchar(10),
+salary float,
+d_no int,
+primary key(e_no,d_no),
+foreign key(d_no) references dept_426(d_no)
+ );
+ 
+ create table incentives_426(
+ e_no int,
+ incentive_date varchar(20),
+ incentive_amt float,
+ primary key(e_no,incentive_date),
+ foreign key(e_no) references employee_426(e_no)
+ );
+ 
+ create table project_426(
+ p_no int,
+ p_loc varchar(20),
+ p_name varchar(20),
+ primary key(p_no)
+ );
+ 
+ create table assigned_to_426(
+ e_no int,
+ p_no int,
+ jobe_role text,
+ primary key(e_no,p_no),
+ foreign key(e_no) references employee_426(e_no),
+ foreign key(p_no) references project_426(p_no)
+ );
+ 
+ 
+ insert into dept_426 values(1,"cse","pj");
+ insert into dept_426 values(2,"ise","pj");
+ insert into dept_426 values(3,"csds","pg");
+ insert into dept_426 values(4,"ece","pg");
+ insert into dept_426 values(5,"aiml","pj");
+ select * from dept_426;
+ 
+ insert into employee_426 values(101,"mahesh",100,"12/01/1999",100000,1);
+ insert into employee_426 values(201,"kushal",200,"17/01/2020",50000,2);
+ insert into employee_426 values(301,"naga",100,"01/09/2004",30000,3);
+ insert into employee_426 values(401,"chaithanya",101,"03/08/2000",10000,4);
+ insert into employee_426 values(501,"aman",101,"19/02/2008",90000,5);
+ select * from employee_426;
+ 
+insert into incentives_426 values(101,"12/03/2004",50000);
+insert into incentives_426 values(201,"17/03/2024",25000);
+insert into incentives_426 values(301,"01/12/2019",15000);
+insert into incentives_426 values(401,"03/11/2019",5000);
+insert into incentives_426 values(501,"29/4/2019",45000);
+
+select * from incentives_426;
+
+insert into project_426 values(10,"bangalore","chatbot");
+insert into project_426 values(40,"delhi","ml model");
+insert into project_426 values(50,"bombay","blockchain");
+insert into project_426 values(30,"chennai","stocks");
+insert into project_426 values(80,"mysore","android app");
+select * from project_426;
+
+insert into assigned_to_426 values(101,10,"devops");
+insert into assigned_to_426 values(201,40,"sde");
+insert into assigned_to_426 values(301,50,"manager");
+insert into assigned_to_426 values(401,30,"jpa");
+insert into assigned_to_426 values(501,80,"pa");
+select * from assigned_to_426;
+
+
+//More Queries
+
+select e_name
+from employee_426
+where mngr_no=(select MAX(mngr_no)
+				from employee_426);
+                
+select e_name
+from employee_426
+where salary > (select AVG(salary)
+				from employee_426);
+                
+select e_name
+from employee_426
+where salary=(select MAX(salary)
+			from employee_426
+            where salary < (select MAX(salary)
+			from employee_426));
+            
+select * from employee_426
+where e_no=(select e_no from incentives_426 
+			where incentive_amt=(select MAX(incentive_amt) from incentives_426
+								 where incentive_amt < (select MAX(incentive_amt) 
+														from incentives_426)) );
+                                                        
+insert into employee_426 values(601,"akash",101,"29/12/2004",80000,1);
+insert into employee_426 values(701,"santhosh",101,"19/02/2008",90000,5);
+
+select * from employee_426 e
+where e.d_no=(select e1.d_no from employee_426 e1 
+			  where e.mngr_no=e1.e_no);
+              
