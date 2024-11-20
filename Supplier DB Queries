@@ -1,0 +1,85 @@
+show databases;
+create database Supplier_426;
+use Supplier_426;
+show tables;
+
+create table supplierT_426(
+s_id int,
+s_name varchar(20),
+city varchar(20),
+primary key(s_id)
+);
+
+create table parts_426(
+p_id int,
+p_name varchar(20),
+color varchar(20),
+primary key(p_id)
+);
+
+create table catalog_426(
+s_id int,
+p_id int,
+cost int,
+primary key(s_id,p_id),
+foreign key(s_id) references supplierT_426(s_id),
+foreign key(p_id) references parts_426(p_id)
+);
+
+insert into supplierT_426 values(10001,"Acme widget","Bangalore");
+insert into supplierT_426 values(10002,"Johns","Kolkata");
+insert into supplierT_426 values(10003,"Vimal","Mumbai");
+insert into supplierT_426 values(10004,"Reliance","Delhi");
+select * from supplierT_426;
+
+insert into parts_426 values(20001,"Book","Red");
+insert into parts_426 values(20002,"Pen","Red");
+insert into parts_426 values(20003,"Pencil","Green");
+insert into parts_426 values(20004,"Mobile","Green");
+insert into parts_426 values(20005,"Charger","Black");
+select * from parts_426;
+
+insert into catalog_426 values(10001,20001,10);
+insert into catalog_426 values(10001,20002,10);
+insert into catalog_426 values(10001,20003,30);
+insert into catalog_426 values(10001,20004,10);
+insert into catalog_426 values(10001,20005,10);
+insert into catalog_426 values(10002,20001,10);
+insert into catalog_426 values(10002,20002,20);
+insert into catalog_426 values(10003,20003,30);
+insert into catalog_426 values(10004,20003,40);
+select * from catalog_426;
+
+select distinct p.p_name
+from parts_426 p,catalog_426 c
+where p.p_id=c.p_id;
+
+select distinct s.s_name
+from catalog_426 c,supplierT_426 s
+where c.s_id=s.s_id and NOT EXISTS(select p.p_id from parts_426 p where not exists(select c1.s_id from catalog_426 c1
+								where c1.s_id=c.s_id and c1.p_id=p.p_id));
+                                
+select distinct s.s_name
+from catalog_426 c,supplierT_426 s
+where c.s_id=s.s_id and not exists(select p.p_id 
+									from parts_426 p where p.color="Red" 
+                                    and not exists(select c1.s_id 
+													from catalog_426 c1 
+                                                    where c1.s_id=c.s_id and c1.p_id=p.p_id and p.color="Red"));                                
+
+select p.p_name
+from parts_426 p,catalog_426 c,supplierT_426 s
+where p.p_id=c.p_id and c.s_id=s.s_id 
+and s.s_name="Acme widget" and not exists(select * from catalog_426 c1,supplierT_426 s1
+										where p.p_id=c1.p_id and c1.s_id=s1.s_id and s1.s_name!="Acme widget");
+                                                                                
+select distinct c.s_id
+from catalog_426 c
+where c.cost>(select AVG(c1.cost) from catalog_426 c1
+			  where c1.p_id=c.p_id);
+              
+select p.p_id,s.s_name
+from parts_426 p,catalog_426 c,supplierT_426 s
+where c.p_id=p.p_id and c.s_id=s.s_id 
+and c.cost=(select MAX(c1.cost) 
+			from catalog_426 c1 where c1.p_id=p.p_id);
